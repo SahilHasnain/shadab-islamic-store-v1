@@ -8,7 +8,7 @@ const headers = {
   "X-Appwrite-Key": appwriteConfig.apiKey,
 };
 
-async function request<T>(route: string, init?: RequestInit) {
+export async function appwriteRequest<T>(route: string, init?: RequestInit) {
   const response = await fetch(`${appwriteConfig.endpoint}${route}`, {
     ...init,
     headers: {
@@ -43,11 +43,53 @@ export async function listDocuments<TDocument>(
   collectionId: string,
   queries: string[] = [],
 ) {
-  return request<AppwriteListResponse<TDocument>>(buildListRoute(collectionId, queries));
+  return appwriteRequest<AppwriteListResponse<TDocument>>(buildListRoute(collectionId, queries));
 }
 
 export async function getDocument<TDocument>(collectionId: string, documentId: string) {
-  return request<TDocument>(
+  return appwriteRequest<TDocument>(
     `/databases/${appwriteConfig.databaseId}/collections/${collectionId}/documents/${documentId}`,
+  );
+}
+
+export async function createDocument<TDocument>(
+  collectionId: string,
+  documentId: string,
+  data: Record<string, unknown>,
+) {
+  return appwriteRequest<TDocument>(
+    `/databases/${appwriteConfig.databaseId}/collections/${collectionId}/documents`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        documentId,
+        data,
+      }),
+    },
+  );
+}
+
+export async function updateDocument<TDocument>(
+  collectionId: string,
+  documentId: string,
+  data: Record<string, unknown>,
+) {
+  return appwriteRequest<TDocument>(
+    `/databases/${appwriteConfig.databaseId}/collections/${collectionId}/documents/${documentId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        data,
+      }),
+    },
+  );
+}
+
+export async function deleteDocument(collectionId: string, documentId: string) {
+  return appwriteRequest<null>(
+    `/databases/${appwriteConfig.databaseId}/collections/${collectionId}/documents/${documentId}`,
+    {
+      method: "DELETE",
+    },
   );
 }

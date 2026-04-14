@@ -9,17 +9,17 @@ export default function AdminDashboardPage() {
           Admin overview
         </h1>
         <p className="max-w-2xl text-sm leading-7 text-slate-600">
-          Phase D sets up admin authentication and the protected shell. CRUD screens
-          for products, categories, content, and settings come next.
+          The admin shell is live and Phase E now covers practical catalog management.
+          Products and categories are connected to Appwrite through admin APIs.
         </p>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Products", value: "Pending" },
-          { label: "Categories", value: "Pending" },
-          { label: "Content", value: "Pending" },
-          { label: "Settings", value: "Pending" },
+          { label: "Products", value: "Ready" },
+          { label: "Categories", value: "Ready" },
+          { label: "Content", value: "Next" },
+          { label: "Settings", value: "Next" },
         ].map((item) => (
           <div
             key={item.label}
