@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shopsathi V1
 
-## Getting Started
+`shopsathi-v1` is the clean frontend-only rebuild of the existing `shopsathi` storefront.
 
-First, run the development server:
+The original `shopsathi` repo in this workspace is used as a product reference only. Its code structure is not the template for this rebuild.
+
+## Current Status
+
+Phase 1 is in progress.
+
+Completed in this phase:
+
+- migration plan
+- canonical frontend domain model
+- mock-data contracts and seed content
+- target project structure baseline
+- project-specific app shell replacing the default Next.js scaffold
+
+## Rebuild Goal
+
+Recreate the storefront experience with:
+
+- homepage
+- product catalog
+- product modal
+- cart drawer
+- WhatsApp-first ordering flow
+
+But do it with:
+
+- mock data only
+- clean feature boundaries
+- maintainable types and helpers
+- no Sanity or backend coupling
+
+## Working Rules
+
+- preserve product behavior, not old repo structure
+- keep route files thin
+- keep product logic outside large UI files
+- use one canonical frontend data model
+- use mock data as the only data source until later phases require otherwise
+
+## Proposed Structure
+
+```text
+app/
+src/
+  data/
+    mock/
+  features/
+    cart/
+    catalog/
+    home/
+    product/
+    shared/
+  lib/
+  types/
+docs/
+```
+
+## Next Phase 1 Tasks
+
+1. Start wiring feature modules against the canonical types.
+2. Expand the mock dataset only where real UI needs it.
+3. Replace the current placeholder landing screen with the real app shell in Phase 2.
+
+## Commands
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

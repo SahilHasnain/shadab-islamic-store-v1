@@ -1,0 +1,32 @@
+import { Container } from "@/src/components/layout/container";
+import { SectionHeading } from "@/src/features/home/section-heading";
+import type { FAQItem } from "@/src/types";
+
+export function FAQSection({ faqs }: { faqs: FAQItem[] }) {
+  return (
+    <section className="py-16 md:py-24">
+      <Container className="space-y-10">
+        <SectionHeading
+          eyebrow="FAQ"
+          title="The rebuild is explicit about what exists now and what comes later."
+          description="This keeps the prototype honest while still making it usable for product and frontend iteration."
+        />
+        <div className="grid gap-4">
+          {faqs.map((faq) => (
+            <article
+              key={faq.id}
+              className="rounded-[1.75rem] border border-[var(--color-border)] bg-white px-6 py-6 shadow-[0_16px_40px_rgba(148,163,184,0.14)]"
+            >
+              <h3 className="font-display text-2xl text-[var(--color-ink)]">
+                {faq.question}
+              </h3>
+              <p className="mt-3 text-base leading-8 text-[var(--color-muted)]">
+                {faq.answer}
+              </p>
+            </article>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
