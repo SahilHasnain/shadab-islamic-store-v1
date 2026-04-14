@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Container } from "@/src/components/layout/container";
-import { mockCategories, mockCatalogProducts, mockSettings } from "@/src/data/mock";
 import { ProductModal } from "@/src/features/product/product-modal";
 import { ProductCard } from "@/src/features/product/product-card";
 import {
@@ -14,7 +13,7 @@ import {
 } from "@/src/features/catalog/helpers";
 import { CatalogSidebar } from "@/src/features/catalog/catalog-sidebar";
 import { SortSelect } from "@/src/features/catalog/sort-select";
-import type { PriceRange, Product, SortOption } from "@/src/types";
+import type { Category, PriceRange, Product, SiteContact, SortOption } from "@/src/types";
 
 function useCatalogFilters(): [CatalogFilters, (next: Partial<CatalogFilters>) => void] {
   const router = useRouter();
@@ -56,23 +55,31 @@ function useCatalogFilters(): [CatalogFilters, (next: Partial<CatalogFilters>) =
   return [filters, updateFilters];
 }
 
-export function CatalogPage() {
+export function CatalogPage({
+  categories,
+  products,
+  contact,
+}: {
+  categories: Category[];
+  products: Product[];
+  contact: SiteContact;
+}) {
   const [filters, updateFilters] = useCatalogFilters();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const filteredProducts = useMemo(
-    () => filterAndSortProducts([...mockCatalogProducts], filters),
-    [filters],
+    () => filterAndSortProducts([...products], filters),
+    [filters, products],
   );
 
   const categoryCounts = useMemo(
     () =>
-      buildCategoryCounts(mockCatalogProducts, mockCategories, {
+      buildCategoryCounts(products, categories, {
         search: filters.search,
         inStockOnly: filters.inStockOnly,
         priceRange: filters.priceRange,
       }),
-    [filters.inStockOnly, filters.priceRange, filters.search],
+    [categories, filters.inStockOnly, filters.priceRange, filters.search, products],
   );
 
   return (
@@ -89,7 +96,8 @@ export function CatalogPage() {
                   Browse the full storefront.
                 </h1>
                 <p className="text-lg leading-8 text-[var(--color-muted)]">
-                  Explore curated products, compare prices, and open any item for full details before ordering.
+                  Explore curated products, compare prices, and open any item for full
+                  details before ordering.
                 </p>
               </div>
 
@@ -113,7 +121,7 @@ export function CatalogPage() {
                 <strong className="text-[var(--color-ink)]">
                   {filters.category === "all"
                     ? "All products"
-                    : getCategoryTitle(filters.category, mockCategories)}
+                    : getCategoryTitle(filters.category, categories)}
                 </strong>
               </span>
               <span>
@@ -125,7 +133,7 @@ export function CatalogPage() {
 
           <section className="grid gap-6 lg:grid-cols-[18rem_1fr]">
             <CatalogSidebar
-              categories={mockCategories}
+              categories={categories}
               counts={categoryCounts}
               selectedCategory={filters.category}
               onCategoryChange={(value) => updateFilters({ category: value })}
@@ -142,9 +150,7 @@ export function CatalogPage() {
                     <ProductCard
                       key={product.id}
                       product={product}
-                      category={mockCategories.find(
-                        (category) => category.slug === product.categorySlug,
-                      )}
+                      category={categories.find((category) => category.id === product.categorySlug)}
                       onClick={() => setSelectedProduct(product)}
                     />
                   ))}
@@ -166,7 +172,7 @@ export function CatalogPage() {
 
       <ProductModal
         product={selectedProduct}
-        contact={mockSettings.contact}
+        contact={contact}
         onClose={() => setSelectedProduct(null)}
       />
     </>

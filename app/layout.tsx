@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
-import { AppShell } from "@/src/components/layout/app-shell";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -14,8 +13,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Shopsathi V1",
-  description: "Frontend-only rebuild foundation for the Shopsathi storefront.",
+  title: "Shopsathi",
+  description: "Shopsathi storefront and admin panel.",
 };
 
 export default function RootLayout({
@@ -29,7 +28,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[var(--color-page)] text-[var(--color-ink)]">
-        <AppShell>{children}</AppShell>
+        {children}
       </body>
     </html>
   );

@@ -2,19 +2,19 @@
 
 import Image from "next/image";
 import { Button } from "@/src/components/ui/button";
-import { mockSettings } from "@/src/data/mock";
 import { formatPrice } from "@/src/features/home/format";
 import { buildWhatsAppUrl, cn } from "@/src/lib/utils";
 import { useCart } from "@/src/features/cart/cart-context";
+import type { SiteContact } from "@/src/types";
 
-export function CartDrawer() {
+export function CartDrawer({ contact }: { contact: SiteContact }) {
   const { items, open, closeCart, updateQuantity, removeItem, clear, subtotal } =
     useCart();
 
   const message =
     items.length === 0
-      ? mockSettings.contact.whatsappMessage
-      : `${mockSettings.contact.whatsappMessage}\n\n${items
+      ? contact.whatsappMessage
+      : `${contact.whatsappMessage}\n\n${items
           .map((item, index) => {
             const selections = item.selections.length
               ? ` [${item.selections.map((entry) => `${entry.group}: ${entry.value}`).join(", ")}]`
@@ -153,7 +153,7 @@ export function CartDrawer() {
           </div>
           <div className="flex gap-3">
             <Button
-              href={items.length ? buildWhatsAppUrl(mockSettings.contact.whatsappNumber, message) : "#"}
+              href={items.length ? buildWhatsAppUrl(contact.whatsappNumber, message) : "#"}
               className={cn("flex-1", items.length ? "" : "pointer-events-none opacity-50")}
             >
               Order on WhatsApp

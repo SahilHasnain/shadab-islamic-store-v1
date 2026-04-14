@@ -1,15 +1,19 @@
-import { mockSiteContent } from "@/src/data/mock";
 import { AboutSection } from "@/src/features/home/about-section";
 import { ContactSection } from "@/src/features/home/contact-section";
 import { FAQSection } from "@/src/features/home/faq-section";
 import { FeaturedProductsSection } from "@/src/features/home/featured-products-section";
 import { HeroSection } from "@/src/features/home/hero-section";
 import { TestimonialsSection } from "@/src/features/home/testimonials-section";
+import type { SiteContent } from "@/src/types";
 
-export function HomePage() {
-  const { settings, heroSlides, categories, featuredProducts, testimonials, faqs } =
-    mockSiteContent;
-
+export function HomePage({
+  settings,
+  heroSlides,
+  categories,
+  featuredProducts,
+  testimonials,
+  faqs,
+}: SiteContent) {
   return (
     <>
       <HeroSection slides={heroSlides} categories={categories} />
