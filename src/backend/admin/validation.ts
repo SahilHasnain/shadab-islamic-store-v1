@@ -27,7 +27,7 @@ export function parseCategoryInput(payload: unknown): CategoryInput {
   if (!isNonEmptyString(data.description)) throw new Error("Category description is required");
 
   const title = data.title.trim();
-  const slug = isNonEmptyString(data.slug) ? slugify(data.slug) : slugify(title);
+  const slug = slugify(title);
   const displayOrder = Number(data.displayOrder);
 
   if (!slug) throw new Error("Category slug is required");
@@ -73,7 +73,7 @@ export function parseProductInput(payload: unknown): ProductInput {
   }
 
   const name = data.name.trim();
-  const slug = isNonEmptyString(data.slug) ? slugify(data.slug) : slugify(name);
+  const slug = slugify(name);
   const basePrice = Number(data.basePrice);
   const discountValue =
     data.discountValue === null || data.discountValue === undefined || data.discountValue === ""

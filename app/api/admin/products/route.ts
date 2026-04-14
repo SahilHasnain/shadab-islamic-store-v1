@@ -7,6 +7,7 @@ import {
   updateDocument,
 } from "@/src/backend/appwrite/server";
 import type { AppwriteProductDocument } from "@/src/backend/appwrite/types";
+import { ensureUniqueSlug } from "@/src/backend/admin/unique-slug";
 import { parseProductInput } from "@/src/backend/admin/validation";
 
 export async function GET() {
@@ -20,10 +21,17 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const payload = parseProductInput(await request.json());
+    const uniqueSlug = await ensureUniqueSlug(
+      appwriteConfig.collections.products,
+      payload.slug,
+    );
     const document = await createDocument<AppwriteProductDocument>(
       appwriteConfig.collections.products,
       crypto.randomUUID(),
-      payload,
+      {
+        ...payload,
+        slug: uniqueSlug,
+      },
     );
     return NextResponse.json(document, { status: 201 });
   } catch (error) {
@@ -41,10 +49,18 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Product id is required" }, { status: 400 });
     }
     const payload = parseProductInput(body);
+    const uniqueSlug = await ensureUniqueSlug(
+      appwriteConfig.collections.products,
+      payload.slug,
+      body.id,
+    );
     const document = await updateDocument<AppwriteProductDocument>(
       appwriteConfig.collections.products,
       body.id,
-      payload,
+      {
+        ...payload,
+        slug: uniqueSlug,
+      },
     );
     return NextResponse.json(document);
   } catch (error) {

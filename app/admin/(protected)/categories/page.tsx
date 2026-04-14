@@ -2,20 +2,22 @@
 
 import { useEffect, useState } from "react";
 import type { AppwriteCategoryDocument } from "@/src/backend/appwrite/types";
+import { ImageGalleryUploadField } from "@/src/features/admin/image-gallery-upload-field";
+import { uploadAdminImage } from "@/src/features/admin/upload-image";
 
 interface CategoryFormState {
   title: string;
-  slug: string;
   description: string;
   displayOrder: string;
+  featuredImageIds: string[];
   isActive: boolean;
 }
 
 const emptyForm: CategoryFormState = {
   title: "",
-  slug: "",
   description: "",
   displayOrder: "1",
+  featuredImageIds: [],
   isActive: true,
 };
 
@@ -25,6 +27,7 @@ export default function AdminCategoriesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -63,9 +66,9 @@ export default function AdminCategoriesPage() {
     setEditingId(category.$id);
     setForm({
       title: category.title,
-      slug: category.slug,
       description: category.description,
       displayOrder: String(category.displayOrder),
+      featuredImageIds: category.featuredImageIds ?? [],
       isActive: category.isActive !== false,
     });
     setError(null);
@@ -132,6 +135,20 @@ export default function AdminCategoriesPage() {
     }
   }
 
+  async function handleImageUpload(file: File) {
+    setUploadingImage(true);
+    setError(null);
+
+    try {
+      return await uploadAdminImage(file);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Unable to upload image");
+      throw uploadError;
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -195,16 +212,6 @@ export default function AdminCategoriesPage() {
             </label>
 
             <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">Slug</span>
-              <input
-                value={form.slug}
-                onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                placeholder="fresh-vegetables"
-              />
-            </label>
-
-            <label className="block space-y-2">
               <span className="text-sm font-medium text-slate-700">Description</span>
               <textarea
                 required
@@ -231,6 +238,17 @@ export default function AdminCategoriesPage() {
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
               />
             </label>
+
+            <ImageGalleryUploadField
+              label="Category images"
+              description="Upload one or more images used for category presentation."
+              values={form.featuredImageIds}
+              uploading={uploadingImage}
+              onUpload={handleImageUpload}
+              onChange={(values) =>
+                setForm((current) => ({ ...current, featuredImageIds: values }))
+              }
+            />
 
             <label className="flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
               <input
@@ -291,7 +309,7 @@ export default function AdminCategoriesPage() {
                       </span>
                     </div>
                     <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                      {category.slug} | Order {category.displayOrder}
+                      Order {category.displayOrder}
                     </p>
                     <p className="max-w-2xl text-sm leading-7 text-slate-600">
                       {category.description}

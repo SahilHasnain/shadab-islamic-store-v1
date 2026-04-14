@@ -5,10 +5,12 @@ import type {
   AppwriteCategoryDocument,
   AppwriteProductDocument,
 } from "@/src/backend/appwrite/types";
+import { ImageGalleryUploadField } from "@/src/features/admin/image-gallery-upload-field";
+import { ImageUploadField } from "@/src/features/admin/image-upload-field";
+import { uploadAdminImage } from "@/src/features/admin/upload-image";
 
 interface ProductFormState {
   name: string;
-  slug: string;
   categoryId: string;
   shortDescription: string;
   basePrice: string;
@@ -16,15 +18,14 @@ interface ProductFormState {
   discountValue: string;
   inStock: boolean;
   featured: boolean;
-  mainImageId: string;
-  galleryImageIds: string;
+  mainImageId?: string;
+  galleryImageIds: string[];
   optionsJson: string;
   isActive: boolean;
 }
 
 const emptyForm: ProductFormState = {
   name: "",
-  slug: "",
   categoryId: "",
   shortDescription: "",
   basePrice: "",
@@ -32,18 +33,11 @@ const emptyForm: ProductFormState = {
   discountValue: "",
   inStock: true,
   featured: false,
-  mainImageId: "",
-  galleryImageIds: "",
+  mainImageId: undefined,
+  galleryImageIds: [],
   optionsJson: "",
   isActive: true,
 };
-
-function splitCommaList(value: string) {
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<AppwriteProductDocument[]>([]);
@@ -52,6 +46,8 @@ export default function AdminProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingMainImage, setUploadingMainImage] = useState(false);
+  const [uploadingGalleryImages, setUploadingGalleryImages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -117,7 +113,6 @@ export default function AdminProductsPage() {
     setEditingId(product.$id);
     setForm({
       name: product.name,
-      slug: product.slug,
       categoryId: product.categoryId,
       shortDescription: product.shortDescription,
       basePrice: String(product.basePrice),
@@ -125,8 +120,8 @@ export default function AdminProductsPage() {
       discountValue: product.discountValue === undefined ? "" : String(product.discountValue),
       inStock: product.inStock !== false,
       featured: product.featured === true,
-      mainImageId: product.mainImageId ?? "",
-      galleryImageIds: (product.galleryImageIds ?? []).join(", "),
+      mainImageId: product.mainImageId ?? undefined,
+      galleryImageIds: product.galleryImageIds ?? [],
       optionsJson: product.optionsJson ?? "",
       isActive: product.isActive !== false,
     });
@@ -149,10 +144,9 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           ...(editingId ? { id: editingId } : {}),
           ...form,
-          galleryImageIds: splitCommaList(form.galleryImageIds),
           discountType: form.discountType || undefined,
           discountValue: form.discountValue,
-          mainImageId: form.mainImageId.trim() || undefined,
+          mainImageId: form.mainImageId || undefined,
           optionsJson: form.optionsJson.trim() || undefined,
         }),
       });
@@ -171,6 +165,34 @@ export default function AdminProductsPage() {
       setError(submitError instanceof Error ? submitError.message : "Unable to save product");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleMainImageUpload(file: File) {
+    setUploadingMainImage(true);
+    setError(null);
+
+    try {
+      return await uploadAdminImage(file);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Unable to upload image");
+      throw uploadError;
+    } finally {
+      setUploadingMainImage(false);
+    }
+  }
+
+  async function handleGalleryImageUpload(file: File) {
+    setUploadingGalleryImages(true);
+    setError(null);
+
+    try {
+      return await uploadAdminImage(file);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Unable to upload image");
+      throw uploadError;
+    } finally {
+      setUploadingGalleryImages(false);
     }
   }
 
@@ -263,18 +285,6 @@ export default function AdminProductsPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">Slug</span>
-                <input
-                  value={form.slug}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, slug: event.target.value }))
-                  }
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                  placeholder="fresh-cauliflower"
-                />
-              </label>
-
-              <label className="block space-y-2">
                 <span className="text-sm font-medium text-slate-700">Category</span>
                 <select
                   required
@@ -358,29 +368,25 @@ export default function AdminProductsPage() {
               </label>
             </div>
 
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">Main image ID</span>
-              <input
-                value={form.mainImageId}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, mainImageId: event.target.value }))
-                }
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                placeholder="Appwrite file id"
-              />
-            </label>
+            <ImageUploadField
+              label="Main image"
+              description="Upload the primary product image used in product cards and quick view."
+              value={form.mainImageId}
+              uploading={uploadingMainImage}
+              onUpload={handleMainImageUpload}
+              onChange={(value) => setForm((current) => ({ ...current, mainImageId: value }))}
+            />
 
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">Gallery image IDs</span>
-              <input
-                value={form.galleryImageIds}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, galleryImageIds: event.target.value }))
-                }
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                placeholder="file-id-1, file-id-2"
-              />
-            </label>
+            <ImageGalleryUploadField
+              label="Gallery images"
+              description="Upload additional product images. They will appear in product galleries."
+              values={form.galleryImageIds}
+              uploading={uploadingGalleryImages}
+              onUpload={handleGalleryImageUpload}
+              onChange={(values) =>
+                setForm((current) => ({ ...current, galleryImageIds: values }))
+              }
+            />
 
             <label className="block space-y-2">
               <span className="text-sm font-medium text-slate-700">Options JSON</span>
@@ -499,7 +505,7 @@ export default function AdminProductsPage() {
                         ) : null}
                       </div>
                       <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                        {product.slug} | {category?.title ?? "Unknown category"}
+                        {category?.title ?? "Unknown category"}
                       </p>
                       <p className="text-sm leading-7 text-slate-600">{product.shortDescription}</p>
                       <p className="text-sm font-semibold text-slate-900">
