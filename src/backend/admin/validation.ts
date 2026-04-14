@@ -117,3 +117,59 @@ export function parseProductInput(payload: unknown): ProductInput {
     isActive: data.isActive !== false,
   };
 }
+
+export interface SiteSettingsInput {
+  businessName: string;
+  description: string;
+  logoImageId?: string;
+  businessImageId?: string;
+  featuredProductsTitle: string;
+  whatsappNumber: string;
+  whatsappMessage: string;
+  instagramHandle?: string;
+  mapEmbedUrl?: string;
+  newProductThresholdDays: number;
+}
+
+export function parseSiteSettingsInput(payload: unknown): SiteSettingsInput {
+  const data = (payload ?? {}) as Record<string, unknown>;
+
+  if (!isNonEmptyString(data.businessName)) {
+    throw new Error("Business name is required");
+  }
+  if (!isNonEmptyString(data.description)) {
+    throw new Error("Business description is required");
+  }
+  if (!isNonEmptyString(data.featuredProductsTitle)) {
+    throw new Error("Featured products title is required");
+  }
+  if (!isNonEmptyString(data.whatsappNumber)) {
+    throw new Error("WhatsApp number is required");
+  }
+  if (!isNonEmptyString(data.whatsappMessage)) {
+    throw new Error("WhatsApp message is required");
+  }
+
+  const newProductThresholdDays = Number(data.newProductThresholdDays);
+
+  if (!Number.isFinite(newProductThresholdDays) || newProductThresholdDays < 0) {
+    throw new Error("New product threshold days must be a valid non-negative number");
+  }
+
+  return {
+    businessName: String(data.businessName).trim(),
+    description: String(data.description).trim(),
+    logoImageId: isNonEmptyString(data.logoImageId) ? data.logoImageId.trim() : undefined,
+    businessImageId: isNonEmptyString(data.businessImageId)
+      ? data.businessImageId.trim()
+      : undefined,
+    featuredProductsTitle: String(data.featuredProductsTitle).trim(),
+    whatsappNumber: String(data.whatsappNumber).trim(),
+    whatsappMessage: String(data.whatsappMessage).trim(),
+    instagramHandle: isNonEmptyString(data.instagramHandle)
+      ? data.instagramHandle.trim()
+      : undefined,
+    mapEmbedUrl: isNonEmptyString(data.mapEmbedUrl) ? data.mapEmbedUrl.trim() : undefined,
+    newProductThresholdDays,
+  };
+}
