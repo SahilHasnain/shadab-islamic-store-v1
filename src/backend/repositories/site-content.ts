@@ -15,37 +15,34 @@ import {
 } from "@/src/backend/mappers/settings-mapper";
 
 export async function getSiteSettings() {
-  const result = await listDocuments<AppwriteSiteSettingsDocument>(
-    appwriteConfig.collections.siteSettings,
-    ['limit(1)'],
-  );
+  const result = await listDocuments<AppwriteSiteSettingsDocument>(appwriteConfig.collections.siteSettings);
 
   return result.documents[0] ? mapSiteSettings(result.documents[0]) : null;
 }
 
 export async function getHeroSlides() {
-  const result = await listDocuments<AppwriteHeroSlideDocument>(
-    appwriteConfig.collections.heroSlides,
-    ['equal("isActive", [true])', 'orderAsc("displayOrder")'],
-  );
+  const result = await listDocuments<AppwriteHeroSlideDocument>(appwriteConfig.collections.heroSlides);
 
-  return result.documents.map(mapHeroSlide);
+  return result.documents
+    .filter((document) => document.isActive !== false)
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .map(mapHeroSlide);
 }
 
 export async function getTestimonials() {
-  const result = await listDocuments<AppwriteTestimonialDocument>(
-    appwriteConfig.collections.testimonials,
-    ['equal("isActive", [true])', 'orderAsc("displayOrder")'],
-  );
+  const result = await listDocuments<AppwriteTestimonialDocument>(appwriteConfig.collections.testimonials);
 
-  return result.documents.map(mapTestimonial);
+  return result.documents
+    .filter((document) => document.isActive !== false)
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .map(mapTestimonial);
 }
 
 export async function getFaqs() {
-  const result = await listDocuments<AppwriteFaqDocument>(
-    appwriteConfig.collections.faqs,
-    ['equal("isActive", [true])', 'orderAsc("displayOrder")'],
-  );
+  const result = await listDocuments<AppwriteFaqDocument>(appwriteConfig.collections.faqs);
 
-  return result.documents.map(mapFaq);
+  return result.documents
+    .filter((document) => document.isActive !== false)
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .map(mapFaq);
 }

@@ -1,3 +1,5 @@
+import { readJsonResponse } from "@/src/features/admin/http";
+
 interface UploadImageResult {
   fileId: string;
   name: string;
@@ -13,10 +15,14 @@ export async function uploadAdminImage(file: File) {
     body: formData,
   });
 
-  const data = (await response.json()) as UploadImageResult | { error?: string };
+  const data = await readJsonResponse<UploadImageResult | { error?: string }>(response);
 
   if (!response.ok) {
-    throw new Error("error" in data ? data.error : "Unable to upload image");
+    throw new Error(data && "error" in data ? data.error : "Unable to upload image");
+  }
+
+  if (!data) {
+    throw new Error("The server returned an empty upload response.");
   }
 
   return data;

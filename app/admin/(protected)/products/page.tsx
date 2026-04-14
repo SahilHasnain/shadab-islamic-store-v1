@@ -5,22 +5,29 @@ import type {
   AppwriteCategoryDocument,
   AppwriteProductDocument,
 } from "@/src/backend/appwrite/types";
+import { AdminNoticeBanner } from "@/src/features/admin/admin-notice-banner";
+import { readJsonResponse } from "@/src/features/admin/http";
 import { ImageGalleryUploadField } from "@/src/features/admin/image-gallery-upload-field";
 import { ImageUploadField } from "@/src/features/admin/image-upload-field";
+import {
+  parseProductOptions,
+  ProductOptionsEditor,
+  serializeProductOptions,
+  type ProductOptionGroupForm,
+} from "@/src/features/admin/product-options-editor";
 import { uploadAdminImage } from "@/src/features/admin/upload-image";
 
 interface ProductFormState {
   name: string;
   categoryId: string;
   shortDescription: string;
-  basePrice: string;
-  discountType: "" | "percentage" | "fixed";
-  discountValue: string;
+  salePrice: string;
+  originalPrice: string;
   inStock: boolean;
   featured: boolean;
   mainImageId?: string;
   galleryImageIds: string[];
-  optionsJson: string;
+  options: ProductOptionGroupForm[];
   isActive: boolean;
 }
 
@@ -28,14 +35,13 @@ const emptyForm: ProductFormState = {
   name: "",
   categoryId: "",
   shortDescription: "",
-  basePrice: "",
-  discountType: "",
-  discountValue: "",
+  salePrice: "",
+  originalPrice: "",
   inStock: true,
   featured: false,
   mainImageId: undefined,
   galleryImageIds: [],
-  optionsJson: "",
+  options: [],
   isActive: true,
 };
 
@@ -61,20 +67,26 @@ export default function AdminProductsPage() {
         fetch("/api/admin/categories", { cache: "no-store" }),
       ]);
 
-      const productsData = (await productsResponse.json()) as
-        | AppwriteProductDocument[]
-        | { error?: string };
-      const categoriesData = (await categoriesResponse.json()) as
-        | AppwriteCategoryDocument[]
-        | { error?: string };
+      const productsData = await readJsonResponse<
+        AppwriteProductDocument[] | { error?: string }
+      >(productsResponse);
+      const categoriesData = await readJsonResponse<
+        AppwriteCategoryDocument[] | { error?: string }
+      >(categoriesResponse);
 
-      if (!productsResponse.ok || !Array.isArray(productsData)) {
-        throw new Error(Array.isArray(productsData) ? "Unable to load products" : productsData.error);
+      if (!productsResponse.ok || !productsData || !Array.isArray(productsData)) {
+        throw new Error(
+          productsData && !Array.isArray(productsData)
+            ? productsData.error
+            : "Unable to load products",
+        );
       }
 
-      if (!categoriesResponse.ok || !Array.isArray(categoriesData)) {
+      if (!categoriesResponse.ok || !categoriesData || !Array.isArray(categoriesData)) {
         throw new Error(
-          Array.isArray(categoriesData) ? "Unable to load categories" : categoriesData.error,
+          categoriesData && !Array.isArray(categoriesData)
+            ? categoriesData.error
+            : "Unable to load categories",
         );
       }
 
@@ -96,6 +108,16 @@ export default function AdminProductsPage() {
     void loadData();
   }, []);
 
+  useEffect(() => {
+    if (!notice) return;
+
+    const timeout = window.setTimeout(() => {
+      setNotice(null);
+    }, 3500);
+
+    return () => window.clearTimeout(timeout);
+  }, [notice]);
+
   const categoryMap = useMemo(
     () => new Map(categories.map((category) => [category.$id, category])),
     [categories],
@@ -115,14 +137,13 @@ export default function AdminProductsPage() {
       name: product.name,
       categoryId: product.categoryId,
       shortDescription: product.shortDescription,
-      basePrice: String(product.basePrice),
-      discountType: product.discountType ?? "",
-      discountValue: product.discountValue === undefined ? "" : String(product.discountValue),
+      salePrice: String(product.salePrice),
+      originalPrice: product.originalPrice === undefined ? "" : String(product.originalPrice),
       inStock: product.inStock !== false,
       featured: product.featured === true,
       mainImageId: product.mainImageId ?? undefined,
       galleryImageIds: product.galleryImageIds ?? [],
-      optionsJson: product.optionsJson ?? "",
+      options: parseProductOptions(product.optionsJson),
       isActive: product.isActive !== false,
     });
     setError(null);
@@ -144,23 +165,28 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           ...(editingId ? { id: editingId } : {}),
           ...form,
-          discountType: form.discountType || undefined,
-          discountValue: form.discountValue,
           mainImageId: form.mainImageId || undefined,
-          optionsJson: form.optionsJson.trim() || undefined,
+          optionsJson: serializeProductOptions(form.options),
         }),
       });
 
-      const data = (await response.json()) as AppwriteProductDocument | { error?: string };
+      const data = await readJsonResponse<AppwriteProductDocument | { error?: string }>(
+        response,
+      );
 
       if (!response.ok) {
-        throw new Error("error" in data ? data.error : "Unable to save product");
+        throw new Error(data && "error" in data ? data.error : "Unable to save product");
+      }
+
+      if (!data) {
+        throw new Error("The server returned an empty response.");
       }
 
       const nextEditingId = editingId;
       resetForm();
       setNotice(nextEditingId ? "Product updated." : "Product created.");
       await loadData();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unable to save product");
     } finally {
@@ -204,10 +230,10 @@ export default function AdminProductsPage() {
       const response = await fetch(`/api/admin/products?id=${encodeURIComponent(id)}`, {
         method: "DELETE",
       });
-      const data = (await response.json()) as { ok?: boolean; error?: string };
+      const data = await readJsonResponse<{ ok?: boolean; error?: string }>(response);
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Unable to delete product");
+        throw new Error(data?.error ?? "Unable to delete product");
       }
 
       if (editingId === id) {
@@ -216,6 +242,7 @@ export default function AdminProductsPage() {
 
       setNotice("Product deleted.");
       await loadData();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (deleteError) {
       setError(deleteError instanceof Error ? deleteError.message : "Unable to delete product");
     }
@@ -223,6 +250,8 @@ export default function AdminProductsPage() {
 
   return (
     <div className="space-y-8">
+      <AdminNoticeBanner message={notice} />
+
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
           Catalog
@@ -262,12 +291,6 @@ export default function AdminProductsPage() {
           {error ? (
             <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
-            </div>
-          ) : null}
-
-          {notice ? (
-            <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              {notice}
             </div>
           ) : null}
 
@@ -320,50 +343,32 @@ export default function AdminProductsPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">Base price</span>
+                <span className="text-sm font-medium text-slate-700">Selling price</span>
                 <input
                   required
                   min="0"
                   step="0.01"
                   type="number"
-                  value={form.basePrice}
+                  value={form.salePrice}
                   onChange={(event) =>
-                    setForm((current) => ({ ...current, basePrice: event.target.value }))
+                    setForm((current) => ({ ...current, salePrice: event.target.value }))
                   }
                   className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
                 />
               </label>
 
               <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">Discount type</span>
-                <select
-                  value={form.discountType}
-                  onChange={(event) =>
-                    setForm((current) => ({
-                      ...current,
-                      discountType: event.target.value as ProductFormState["discountType"],
-                    }))
-                  }
-                  className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                >
-                  <option value="">No discount</option>
-                  <option value="percentage">Percentage</option>
-                  <option value="fixed">Fixed</option>
-                </select>
-              </label>
-
-              <label className="block space-y-2">
-                <span className="text-sm font-medium text-slate-700">Discount value</span>
+                <span className="text-sm font-medium text-slate-700">Original price</span>
                 <input
                   min="0"
                   step="0.01"
                   type="number"
-                  value={form.discountValue}
+                  value={form.originalPrice}
                   onChange={(event) =>
-                    setForm((current) => ({ ...current, discountValue: event.target.value }))
+                    setForm((current) => ({ ...current, originalPrice: event.target.value }))
                   }
                   className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                  placeholder="Optional"
+                  placeholder="Optional strike-through price"
                 />
               </label>
             </div>
@@ -388,18 +393,10 @@ export default function AdminProductsPage() {
               }
             />
 
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">Options JSON</span>
-              <textarea
-                rows={5}
-                value={form.optionsJson}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, optionsJson: event.target.value }))
-                }
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-900"
-                placeholder='[{"name":"Weight","values":["500g","1kg"]}]'
-              />
-            </label>
+            <ProductOptionsEditor
+              value={form.options}
+              onChange={(options) => setForm((current) => ({ ...current, options }))}
+            />
 
             <div className="grid gap-3 md:grid-cols-3">
               <label className="flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
@@ -509,10 +506,8 @@ export default function AdminProductsPage() {
                       </p>
                       <p className="text-sm leading-7 text-slate-600">{product.shortDescription}</p>
                       <p className="text-sm font-semibold text-slate-900">
-                        Rs. {product.basePrice}
-                        {product.discountType && product.discountValue !== undefined
-                          ? ` | ${product.discountType} discount ${product.discountValue}`
-                          : ""}
+                        Rs. {product.salePrice}
+                        {product.originalPrice ? ` | was Rs. ${product.originalPrice}` : ""}
                       </p>
                     </div>
 

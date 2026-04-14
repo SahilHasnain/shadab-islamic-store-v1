@@ -11,11 +11,11 @@ import { ensureUniqueSlug } from "@/src/backend/admin/unique-slug";
 import { parseProductInput } from "@/src/backend/admin/validation";
 
 export async function GET() {
-  const result = await listDocuments<AppwriteProductDocument>(
-    appwriteConfig.collections.products,
-    ['orderDesc("$createdAt")'],
+  const result = await listDocuments<AppwriteProductDocument>(appwriteConfig.collections.products);
+  const documents = [...result.documents].sort((left, right) =>
+    right.$createdAt.localeCompare(left.$createdAt),
   );
-  return NextResponse.json(result.documents);
+  return NextResponse.json(documents);
 }
 
 export async function POST(request: Request) {

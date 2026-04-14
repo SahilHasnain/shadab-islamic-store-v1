@@ -53,7 +53,7 @@ export interface ProductInput {
   categoryId: string;
   shortDescription: string;
   basePrice: number;
-  discountType?: "percentage" | "fixed";
+  discountType?: "fixed";
   discountValue?: number;
   inStock: boolean;
   featured: boolean;
@@ -74,26 +74,29 @@ export function parseProductInput(payload: unknown): ProductInput {
 
   const name = data.name.trim();
   const slug = slugify(name);
-  const basePrice = Number(data.basePrice);
-  const discountValue =
-    data.discountValue === null || data.discountValue === undefined || data.discountValue === ""
+  const salePrice = Number(data.salePrice);
+  const originalPrice =
+    data.originalPrice === null || data.originalPrice === undefined || data.originalPrice === ""
       ? undefined
-      : Number(data.discountValue);
+      : Number(data.originalPrice);
 
   if (!slug) throw new Error("Product slug is required");
-  if (!Number.isFinite(basePrice) || basePrice < 0) {
-    throw new Error("Base price must be a valid non-negative number");
+  if (!Number.isFinite(salePrice) || salePrice < 0) {
+    throw new Error("Sale price must be a valid non-negative number");
   }
   if (
-    discountValue !== undefined &&
-    (!Number.isFinite(discountValue) || discountValue < 0)
+    originalPrice !== undefined &&
+    (!Number.isFinite(originalPrice) || originalPrice < 0)
   ) {
-    throw new Error("Discount value must be a valid non-negative number");
+    throw new Error("Original price must be a valid non-negative number");
+  }
+  if (originalPrice !== undefined && originalPrice < salePrice) {
+    throw new Error("Original price must be greater than or equal to sale price");
   }
 
-  const discountType =
-    data.discountType === "percentage" || data.discountType === "fixed"
-      ? data.discountType
+  const discountValue =
+    originalPrice !== undefined && originalPrice > salePrice
+      ? originalPrice - salePrice
       : undefined;
 
   return {
@@ -101,8 +104,8 @@ export function parseProductInput(payload: unknown): ProductInput {
     slug,
     categoryId: String(data.categoryId).trim(),
     shortDescription: String(data.shortDescription).trim(),
-    basePrice,
-    discountType,
+    basePrice: originalPrice ?? salePrice,
+    discountType: discountValue !== undefined ? "fixed" : undefined,
     discountValue,
     inStock: data.inStock !== false,
     featured: data.featured === true,

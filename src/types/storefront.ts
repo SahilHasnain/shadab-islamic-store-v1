@@ -1,5 +1,3 @@
-export type DiscountType = "percentage" | "fixed";
-
 export type PriceRange = "all" | "under-500" | "500-1000" | "1000-plus";
 
 export type SortOption = "latest" | "price-asc" | "price-desc";
@@ -56,15 +54,14 @@ export interface Product {
   slug: string;
   name: string;
   categorySlug: string;
-  basePrice: number;
+  salePrice: number;
+  originalPrice?: number;
   image: string;
   gallery: string[];
   shortDescription: string;
   inStock: boolean;
   featured: boolean;
   createdAt: string;
-  discountType?: DiscountType;
-  discountValue?: number;
   options?: ProductOptionGroup[];
 }
 

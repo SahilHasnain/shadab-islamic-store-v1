@@ -9,19 +9,9 @@ export interface CatalogFilters {
 }
 
 export function computeProductPrice(product: Product) {
-  const base = product.basePrice;
-
-  if (!product.discountType || !product.discountValue || product.discountValue <= 0) {
-    return { base, final: base, discounted: false };
-  }
-
-  if (product.discountType === "percentage") {
-    const final = Math.max(0, base * (1 - product.discountValue / 100));
-    return { base, final, discounted: true };
-  }
-
-  const final = Math.max(0, base - product.discountValue);
-  return { base, final, discounted: true };
+  const base = product.originalPrice ?? product.salePrice;
+  const final = product.salePrice;
+  return { base, final, discounted: base > final };
 }
 
 export function matchesPriceRange(price: number, range: PriceRange) {

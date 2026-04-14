@@ -6,11 +6,11 @@ async function slugExists(
   slug: string,
   excludeDocumentId?: string,
 ) {
-  const result = await listDocuments<AppwriteDocumentBase & { slug: string }>(collectionId, [
-    `equal("slug", ["${slug}"])`,
-  ]);
+  const result = await listDocuments<AppwriteDocumentBase & { slug: string }>(collectionId);
 
-  return result.documents.some((document) => document.$id !== excludeDocumentId);
+  return result.documents.some(
+    (document) => document.slug === slug && document.$id !== excludeDocumentId,
+  );
 }
 
 export async function ensureUniqueSlug(

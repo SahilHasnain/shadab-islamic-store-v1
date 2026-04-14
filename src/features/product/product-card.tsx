@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Button } from "@/src/components/ui/button";
 import { computeProductPrice } from "@/src/features/catalog/helpers";
 import { useCart } from "@/src/features/cart/cart-context";
-import { getDisplayPrice } from "@/src/features/home/format";
+import { getDiscountPercentage, getDisplayPrice } from "@/src/features/home/format";
 import { cn } from "@/src/lib/utils";
 import type { Category, Product } from "@/src/types";
 
@@ -22,6 +22,7 @@ export function ProductCard({
 
   const hasOptions = Boolean(product.options?.length);
   const unitPrice = computeProductPrice(product).final;
+  const discountPercentage = getDiscountPercentage(product);
 
   return (
     <article className="group overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)]">
@@ -35,11 +36,9 @@ export function ProductCard({
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-            {product.discountValue ? (
+            {discountPercentage ? (
               <span className="rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
-                {product.discountType === "percentage"
-                  ? `${product.discountValue}% off`
-                  : `₹${product.discountValue} off`}
+                {discountPercentage}% off
               </span>
             ) : null}
             {!product.inStock ? (
@@ -71,9 +70,7 @@ export function ProductCard({
               >
                 {price.original}
               </p>
-              <p className="font-display text-3xl text-[var(--color-ink)]">
-                {price.final}
-              </p>
+              <p className="font-display text-3xl text-[var(--color-ink)]">{price.final}</p>
             </div>
           </div>
         </div>

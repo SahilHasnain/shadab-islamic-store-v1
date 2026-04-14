@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Button } from "@/src/components/ui/button";
 import { Container } from "@/src/components/layout/container";
+import { getDiscountPercentage, getDisplayPrice } from "@/src/features/home/format";
 import { SectionHeading } from "@/src/features/home/section-heading";
-import { getDisplayPrice } from "@/src/features/home/format";
 import type { Product } from "@/src/types";
 
 export function FeaturedProductsSection({
@@ -29,6 +29,7 @@ export function FeaturedProductsSection({
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => {
             const price = getDisplayPrice(product);
+            const discountPercentage = getDiscountPercentage(product);
 
             return (
               <article
@@ -44,11 +45,9 @@ export function FeaturedProductsSection({
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-                    {product.discountValue ? (
+                    {discountPercentage ? (
                       <span className="rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
-                        {product.discountType === "percentage"
-                          ? `${product.discountValue}% off`
-                          : `₹${product.discountValue} off`}
+                        {discountPercentage}% off
                       </span>
                     ) : null}
                     {!product.inStock ? (

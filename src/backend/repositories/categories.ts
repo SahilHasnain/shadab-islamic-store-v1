@@ -5,10 +5,10 @@ import type { AppwriteCategoryDocument } from "@/src/backend/appwrite/types";
 import { mapCategory } from "@/src/backend/mappers/category-mapper";
 
 export async function getCategories() {
-  const result = await listDocuments<AppwriteCategoryDocument>(
-    appwriteConfig.collections.categories,
-    ['equal("isActive", [true])', 'orderAsc("displayOrder")'],
-  );
+  const result = await listDocuments<AppwriteCategoryDocument>(appwriteConfig.collections.categories);
 
-  return result.documents.map(mapCategory);
+  return result.documents
+    .filter((document) => document.isActive !== false)
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .map(mapCategory);
 }

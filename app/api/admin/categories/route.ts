@@ -11,11 +11,9 @@ import { ensureUniqueSlug } from "@/src/backend/admin/unique-slug";
 import { parseCategoryInput } from "@/src/backend/admin/validation";
 
 export async function GET() {
-  const result = await listDocuments<AppwriteCategoryDocument>(
-    appwriteConfig.collections.categories,
-    ['orderAsc("displayOrder")'],
-  );
-  return NextResponse.json(result.documents);
+  const result = await listDocuments<AppwriteCategoryDocument>(appwriteConfig.collections.categories);
+  const documents = [...result.documents].sort((left, right) => left.displayOrder - right.displayOrder);
+  return NextResponse.json(documents);
 }
 
 export async function POST(request: Request) {

@@ -1,20 +1,4 @@
-import type { DiscountType, Product } from "@/src/types";
-
-function applyDiscount(
-  basePrice: number,
-  discountType?: DiscountType,
-  discountValue?: number,
-) {
-  if (!discountType || !discountValue || discountValue <= 0) {
-    return basePrice;
-  }
-
-  if (discountType === "percentage") {
-    return Math.max(0, basePrice * (1 - discountValue / 100));
-  }
-
-  return Math.max(0, basePrice - discountValue);
-}
+import type { Product } from "@/src/types";
 
 export function formatPrice(value: number) {
   return new Intl.NumberFormat("en-IN", {
@@ -26,9 +10,15 @@ export function formatPrice(value: number) {
 
 export function getDisplayPrice(product: Product) {
   return {
-    original: formatPrice(product.basePrice),
-    final: formatPrice(
-      applyDiscount(product.basePrice, product.discountType, product.discountValue),
-    ),
+    original: formatPrice(product.originalPrice ?? product.salePrice),
+    final: formatPrice(product.salePrice),
   };
+}
+
+export function getDiscountPercentage(product: Product) {
+  if (!product.originalPrice || product.originalPrice <= product.salePrice) {
+    return undefined;
+  }
+
+  return Math.round(((product.originalPrice - product.salePrice) / product.originalPrice) * 100);
 }

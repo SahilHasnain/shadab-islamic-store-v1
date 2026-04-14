@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { AppwriteCategoryDocument } from "@/src/backend/appwrite/types";
+import { AdminNoticeBanner } from "@/src/features/admin/admin-notice-banner";
+import { readJsonResponse } from "@/src/features/admin/http";
 import { ImageGalleryUploadField } from "@/src/features/admin/image-gallery-upload-field";
 import { uploadAdminImage } from "@/src/features/admin/upload-image";
 
@@ -39,10 +41,14 @@ export default function AdminCategoriesPage() {
       const response = await fetch("/api/admin/categories", {
         cache: "no-store",
       });
-      const data = (await response.json()) as AppwriteCategoryDocument[] | { error?: string };
+      const data = await readJsonResponse<AppwriteCategoryDocument[] | { error?: string }>(
+        response,
+      );
 
-      if (!response.ok || !Array.isArray(data)) {
-        throw new Error(Array.isArray(data) ? "Unable to load categories" : data.error);
+      if (!response.ok || !data || !Array.isArray(data)) {
+        throw new Error(
+          data && !Array.isArray(data) ? data.error : "Unable to load categories",
+        );
       }
 
       setCategories(data);
@@ -56,6 +62,16 @@ export default function AdminCategoriesPage() {
   useEffect(() => {
     void loadCategories();
   }, []);
+
+  useEffect(() => {
+    if (!notice) return;
+
+    const timeout = window.setTimeout(() => {
+      setNotice(null);
+    }, 3500);
+
+    return () => window.clearTimeout(timeout);
+  }, [notice]);
 
   function resetForm() {
     setEditingId(null);
@@ -93,16 +109,23 @@ export default function AdminCategoriesPage() {
         }),
       });
 
-      const data = (await response.json()) as AppwriteCategoryDocument | { error?: string };
+      const data = await readJsonResponse<AppwriteCategoryDocument | { error?: string }>(
+        response,
+      );
 
       if (!response.ok) {
-        throw new Error("error" in data ? data.error : "Unable to save category");
+        throw new Error(data && "error" in data ? data.error : "Unable to save category");
+      }
+
+      if (!data) {
+        throw new Error("The server returned an empty response.");
       }
 
       const nextEditingId = editingId;
       resetForm();
       setNotice(nextEditingId ? "Category updated." : "Category created.");
       await loadCategories();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unable to save category");
     } finally {
@@ -118,10 +141,10 @@ export default function AdminCategoriesPage() {
       const response = await fetch(`/api/admin/categories?id=${encodeURIComponent(id)}`, {
         method: "DELETE",
       });
-      const data = (await response.json()) as { ok?: boolean; error?: string };
+      const data = await readJsonResponse<{ ok?: boolean; error?: string }>(response);
 
       if (!response.ok) {
-        throw new Error(data.error ?? "Unable to delete category");
+        throw new Error(data?.error ?? "Unable to delete category");
       }
 
       if (editingId === id) {
@@ -130,6 +153,7 @@ export default function AdminCategoriesPage() {
 
       setNotice("Category deleted.");
       await loadCategories();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (deleteError) {
       setError(deleteError instanceof Error ? deleteError.message : "Unable to delete category");
     }
@@ -151,6 +175,8 @@ export default function AdminCategoriesPage() {
 
   return (
     <div className="space-y-8">
+      <AdminNoticeBanner message={notice} />
+
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
           Catalog
@@ -190,12 +216,6 @@ export default function AdminCategoriesPage() {
           {error ? (
             <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
-            </div>
-          ) : null}
-
-          {notice ? (
-            <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              {notice}
             </div>
           ) : null}
 
