@@ -85,12 +85,12 @@ export function CatalogPage() {
             </p>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl space-y-3">
-                <h1 className="font-display text-5xl leading-none tracking-[-0.04em] text-[var(--color-ink)] md:text-6xl">
+                <h1 className="font-display text-5xl leading-none tracking-[-0.04em] text-[var(--color-accent-strong)] md:text-6xl">
                   Browse the full storefront.
                 </h1>
                 <p className="text-lg leading-8 text-[var(--color-muted)]">
-                  Phase 4 rebuilds the browsing flow with pure filtering helpers,
-                  cleaner UI boundaries, and a focused product modal.
+                  The catalog now looks closer to the original Shopsathi storefront while
+                  keeping the new implementation clean and maintainable.
                 </p>
               </div>
 
@@ -100,7 +100,7 @@ export function CatalogPage() {
                   value={filters.search}
                   onChange={(event) => updateFilters({ search: event.target.value })}
                   placeholder="Search products"
-                  className="h-12 rounded-full border border-[var(--color-border)] bg-white px-5 text-sm text-[var(--color-ink)]"
+                  className="h-12 rounded-full border border-[var(--color-border)] bg-white px-5 text-sm text-[var(--color-ink)] shadow-[var(--shadow-card)]"
                 />
                 <SortSelect
                   value={filters.sortBy}
@@ -151,7 +151,7 @@ export function CatalogPage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-[2rem] border border-[var(--color-border)] bg-white p-10 text-center">
+                <div className="rounded-[2rem] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
                   <p className="font-display text-3xl text-[var(--color-ink)]">
                     No products match these filters.
                   </p>

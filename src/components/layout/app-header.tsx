@@ -27,11 +27,11 @@ export function AppHeader({
   const { itemCount, openCart } = useCart();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[rgba(255,250,244,0.88)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[rgba(255,255,255,0.82)] backdrop-blur-xl">
       <Container className="py-4">
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white">
+            <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white shadow-[0_8px_24px_rgba(22,163,74,0.18)]">
               <Image
                 src={settings.logoPath}
                 alt={settings.businessName}
@@ -41,11 +41,11 @@ export function AppHeader({
               />
             </span>
             <div>
-              <p className="font-display text-2xl leading-none text-[var(--color-ink)]">
+              <p className="font-display text-2xl leading-none text-[var(--color-accent-strong)]">
                 {settings.businessName}
               </p>
               <p className="mt-1 text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">
-                Frontend Rebuild
+                Official Storefront
               </p>
             </div>
           </Link>
@@ -62,8 +62,8 @@ export function AppHeader({
                   className={cn(
                     "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                     isActive
-                      ? "bg-[var(--color-ink)] text-[var(--color-surface)]"
-                      : "text-[var(--color-ink)] hover:bg-white",
+                      ? "bg-[var(--color-accent)] text-white shadow-[0_10px_24px_rgba(22,163,74,0.22)]"
+                      : "text-[var(--color-ink)] hover:bg-[var(--color-soft)]",
                   )}
                 >
                   {item.label}
@@ -76,7 +76,7 @@ export function AppHeader({
             <button
               type="button"
               onClick={openCart}
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-ink)]"
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-white text-[var(--color-accent-strong)] shadow-[0_8px_20px_rgba(22,163,74,0.12)]"
               aria-label={itemCount ? `Open cart with ${itemCount} items` : "Open cart"}
             >
               <svg
@@ -113,7 +113,7 @@ export function AppHeader({
           <button
             type="button"
             onClick={() => setMobileOpen((current) => !current)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-white lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-white shadow-[0_8px_20px_rgba(22,163,74,0.12)] lg:hidden"
             aria-label="Toggle navigation"
             aria-expanded={mobileOpen}
           >
@@ -130,7 +130,7 @@ export function AppHeader({
             <Link
               key={category.id}
               href={`/products?category=${encodeURIComponent(category.slug)}`}
-              className="rounded-full border border-[var(--color-border)] bg-white px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent-strong)]"
+              className="rounded-full border border-[var(--color-border)] bg-white px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-muted)] transition-colors hover:border-[var(--color-accent)] hover:bg-[var(--color-soft)] hover:text-[var(--color-accent-strong)]"
             >
               {category.title}
             </Link>
@@ -138,7 +138,7 @@ export function AppHeader({
         </div>
 
         {mobileOpen ? (
-          <div className="mt-4 grid gap-4 rounded-[1.75rem] border border-[var(--color-border)] bg-white p-4 lg:hidden">
+          <div className="mt-4 grid gap-4 rounded-[1.75rem] border border-[var(--color-border)] bg-white p-4 shadow-[var(--shadow-panel)] lg:hidden">
             <nav className="grid gap-2">
               {navigation.map((item) => {
                 const isActive =
@@ -152,8 +152,8 @@ export function AppHeader({
                     className={cn(
                       "rounded-2xl px-4 py-3 text-sm font-semibold",
                       isActive
-                        ? "bg-[var(--color-ink)] text-[var(--color-surface)]"
-                        : "bg-[var(--color-surface)] text-[var(--color-ink)]",
+                        ? "bg-[var(--color-accent)] text-white"
+                        : "bg-[var(--color-soft)] text-[var(--color-ink)]",
                     )}
                   >
                     {item.label}

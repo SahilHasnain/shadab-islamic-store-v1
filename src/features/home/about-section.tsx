@@ -13,7 +13,7 @@ export function AboutSection({ settings }: { settings: SiteSettings }) {
   return (
     <section className="py-16 md:py-24">
       <Container className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div className="relative overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-white p-3 shadow-[var(--shadow-panel)]">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]">
             <Image
               src={settings.businessImage}
@@ -34,7 +34,7 @@ export function AboutSection({ settings }: { settings: SiteSettings }) {
             {principles.map((principle) => (
               <div
                 key={principle}
-                className="rounded-[1.75rem] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-5"
+                className="rounded-[1.75rem] border border-[var(--color-border)] bg-white px-5 py-5 shadow-[var(--shadow-card)]"
               >
                 <p className="text-base leading-8 text-[var(--color-muted)]">
                   {principle}

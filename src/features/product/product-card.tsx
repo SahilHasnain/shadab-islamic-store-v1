@@ -24,9 +24,7 @@ export function ProductCard({
   const unitPrice = computeProductPrice(product).final;
 
   return (
-    <article
-      className="group overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-white shadow-[0_18px_48px_rgba(148,163,184,0.18)]"
-    >
+    <article className="group overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)]">
       <button type="button" onClick={onClick} className="block w-full text-left">
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
@@ -38,7 +36,7 @@ export function ProductCard({
           />
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
             {product.discountValue ? (
-              <span className="rounded-full bg-[var(--color-accent)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+              <span className="rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
                 {product.discountType === "percentage"
                   ? `${product.discountValue}% off`
                   : `₹${product.discountValue} off`}

@@ -8,7 +8,7 @@ export function ContactSection({ settings }: { settings: SiteSettings }) {
   return (
     <section className="py-16 md:py-24">
       <Container className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <div className="rounded-[2.5rem] border border-[var(--color-border)] bg-[var(--color-ink)] p-8 text-[var(--color-surface)] shadow-[0_26px_80px_rgba(15,23,42,0.18)]">
+        <div className="rounded-[2.5rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,#16a34a,#166534)] p-8 text-[var(--color-surface)] shadow-[var(--shadow-panel)]">
           <SectionHeading
             eyebrow="Ready To Order"
             title="WhatsApp remains the primary conversion path."
@@ -29,7 +29,7 @@ export function ContactSection({ settings }: { settings: SiteSettings }) {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
+        <div className="overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-white p-3 shadow-[var(--shadow-panel)]">
           <div className="overflow-hidden rounded-[2rem]">
             <iframe
               title={`${settings.businessName} map`}

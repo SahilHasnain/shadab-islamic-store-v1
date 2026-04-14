@@ -11,10 +11,10 @@ const footerLinks = [
 
 export function AppFooter({ settings }: { settings: SiteSettings }) {
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[rgba(255,250,244,0.8)] py-16">
+    <footer className="border-t border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(220,252,231,0.72))] py-16">
       <Container className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
         <div className="space-y-4">
-          <p className="font-display text-3xl text-[var(--color-ink)]">
+          <p className="font-display text-3xl text-[var(--color-accent-strong)]">
             {settings.businessName}
           </p>
           <p className="max-w-md text-sm leading-7 text-[var(--color-muted)]">

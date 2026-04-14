@@ -1,14 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --color-page: #f6efe6;
-  --color-surface: #fffaf4;
-  --color-cream: #f4e9d8;
-  --color-ink: #1f2937;
-  --color-muted: #5f6b7a;
-  --color-border: #ddcfbb;
-  --color-accent: #b95c2e;
-  --color-accent-strong: #8c3f1f;
+  --color-page: #f0fdf4;
+  --color-surface: #ffffff;
+  --color-soft: #dcfce7;
+  --color-soft-strong: #bbf7d0;
+  --color-cream: #ecfccb;
+  --color-ink: #14532d;
+  --color-muted: #3f5f4d;
+  --color-border: #b7e4c1;
+  --color-accent: #16a34a;
+  --color-accent-strong: #15803d;
+  --color-highlight: #f97316;
+  --color-highlight-strong: #ea580c;
+  --shadow-card: 0 18px 48px rgba(22, 101, 52, 0.08);
+  --shadow-panel: 0 26px 80px rgba(22, 101, 52, 0.12);
 }
 
 @theme inline {
@@ -30,8 +36,9 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, rgba(185, 92, 46, 0.12), transparent 24rem),
-    linear-gradient(180deg, #fbf4eb 0%, #f3eadf 100%);
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 24rem),
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.08), transparent 20rem),
+    linear-gradient(180deg, #f7fff8 0%, #eefbf2 100%);
   color: var(--color-ink);
   font-family: var(--font-sans), sans-serif;
 }
@@ -47,10 +54,28 @@ img {
 }
 
 ::selection {
-  background: rgba(185, 92, 46, 0.18);
+  background: rgba(34, 197, 94, 0.2);
   color: var(--color-ink);
 }
 
 .font-display {
   font-family: var(--font-display), serif;
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid rgba(34, 197, 94, 0.38);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #dcfce7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 999px;
 }

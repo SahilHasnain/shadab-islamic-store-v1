@@ -18,7 +18,7 @@ export function FeaturedProductsSection({
         <SectionHeading
           eyebrow="Featured Products"
           title={title}
-          description="The homepage mirrors the original product experience, but the code now treats product cards as a focused feature module instead of mixing data cleanup directly into UI."
+          description="The homepage now carries the same bright storefront energy as the original app, but the implementation remains cleanly separated from data shaping and catalog logic."
           action={
             <Button href="/products" variant="secondary">
               Browse full catalog
@@ -33,7 +33,7 @@ export function FeaturedProductsSection({
             return (
               <article
                 key={product.id}
-                className="group overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-white shadow-[0_18px_48px_rgba(148,163,184,0.18)]"
+                className="group overflow-hidden rounded-[2rem] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)]"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
@@ -45,7 +45,7 @@ export function FeaturedProductsSection({
                   />
                   <div className="absolute left-4 top-4 flex flex-wrap gap-2">
                     {product.discountValue ? (
-                      <span className="rounded-full bg-[var(--color-accent)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
+                      <span className="rounded-full bg-[var(--color-highlight)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white">
                         {product.discountType === "percentage"
                           ? `${product.discountValue}% off`
                           : `₹${product.discountValue} off`}

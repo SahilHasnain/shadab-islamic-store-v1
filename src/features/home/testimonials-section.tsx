@@ -13,14 +13,14 @@ export function TestimonialsSection({
         <SectionHeading
           eyebrow="Testimonials"
           title="Confidence matters more than feature count in this storefront."
-          description="The original app already signaled trust through simple social proof. The rebuild keeps that idea, but the section now lives in an isolated home feature."
+          description="The original app already signaled trust through simple social proof. The rebuild keeps that idea, but the section now looks and reads like a storefront rather than a generic product page."
           align="center"
         />
         <div className="grid gap-6 lg:grid-cols-2">
           {testimonials.map((testimonial) => (
             <article
               key={testimonial.id}
-              className="rounded-[2rem] border border-[var(--color-border)] bg-white p-8 shadow-[0_18px_48px_rgba(148,163,184,0.18)]"
+              className="rounded-[2rem] border border-[var(--color-border)] bg-white p-8 shadow-[var(--shadow-card)]"
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -33,12 +33,12 @@ export function TestimonialsSection({
                     </p>
                   ) : null}
                 </div>
-                <p className="text-sm font-semibold text-[var(--color-accent)]">
+                <p className="text-sm font-semibold text-[var(--color-highlight)]">
                   {Array.from({ length: testimonial.rating ?? 5 }, () => "★").join("")}
                 </p>
               </div>
               <p className="mt-6 text-lg leading-8 text-[var(--color-muted)]">
-                “{testimonial.text}”
+                &ldquo;{testimonial.text}&rdquo;
               </p>
             </article>
           ))}

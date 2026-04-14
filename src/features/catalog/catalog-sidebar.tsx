@@ -28,7 +28,7 @@ export function CatalogSidebar({
   onInStockOnlyChange: (value: boolean) => void;
 }) {
   return (
-    <aside className="space-y-6 rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
+    <aside className="space-y-6 rounded-[2rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(220,252,231,0.86))] p-6 shadow-[var(--shadow-card)]">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-muted)]">
           Categories
@@ -40,7 +40,7 @@ export function CatalogSidebar({
             className={cn(
               "flex items-center justify-between rounded-2xl px-4 py-3 text-left text-sm transition-colors",
               selectedCategory === "all"
-                ? "bg-[var(--color-ink)] text-[var(--color-surface)]"
+                ? "bg-[var(--color-accent)] text-white"
                 : "bg-white text-[var(--color-ink)]",
             )}
           >
@@ -55,7 +55,7 @@ export function CatalogSidebar({
               className={cn(
                 "flex items-center justify-between rounded-2xl px-4 py-3 text-left text-sm transition-colors",
                 selectedCategory === category.slug
-                  ? "bg-[var(--color-ink)] text-[var(--color-surface)]"
+                  ? "bg-[var(--color-accent)] text-white"
                   : "bg-white text-[var(--color-ink)]",
               )}
             >
@@ -79,7 +79,7 @@ export function CatalogSidebar({
               className={cn(
                 "rounded-2xl px-4 py-3 text-left text-sm transition-colors",
                 selectedPriceRange === option.value
-                  ? "bg-[var(--color-accent)] text-white"
+                  ? "bg-[var(--color-highlight)] text-white"
                   : "bg-white text-[var(--color-ink)]",
               )}
             >

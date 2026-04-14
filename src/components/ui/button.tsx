@@ -25,15 +25,15 @@ type ButtonProps = LinkButtonProps | ActionButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--color-accent)] text-white shadow-[0_18px_40px_rgba(185,92,46,0.22)] hover:bg-[var(--color-accent-strong)]",
+    "bg-[var(--color-accent)] text-white shadow-[0_14px_34px_rgba(22,163,74,0.24)] hover:bg-[var(--color-accent-strong)]",
   secondary:
     "border border-[var(--color-border)] bg-white text-[var(--color-ink)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent-strong)]",
   ghost:
-    "text-[var(--color-ink)] hover:bg-[rgba(255,255,255,0.55)]",
+    "text-[var(--color-ink)] hover:bg-[rgba(220,252,231,0.72)]",
 };
 
 const sharedClassName =
-  "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-200";
+  "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5";
 
 export function Button({
   children,

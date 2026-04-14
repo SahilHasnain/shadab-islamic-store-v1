@@ -15,7 +15,7 @@ export function FAQSection({ faqs }: { faqs: FAQItem[] }) {
           {faqs.map((faq) => (
             <article
               key={faq.id}
-              className="rounded-[1.75rem] border border-[var(--color-border)] bg-white px-6 py-6 shadow-[0_16px_40px_rgba(148,163,184,0.14)]"
+              className="rounded-[1.75rem] border border-[var(--color-border)] bg-white px-6 py-6 shadow-[var(--shadow-card)]"
             >
               <h3 className="font-display text-2xl text-[var(--color-ink)]">
                 {faq.question}
