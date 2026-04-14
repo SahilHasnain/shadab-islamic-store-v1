@@ -71,8 +71,7 @@ export function AppFooter({ settings }: { settings: SiteSettings }) {
 
       <Container className="mt-10 border-t border-[var(--color-border)] pt-6">
         <p className="text-sm text-[var(--color-muted)]">
-          © {new Date().getFullYear()} {settings.businessName}. Rebuilt as a
-          frontend-only storefront prototype.
+          © {new Date().getFullYear()} {settings.businessName}. All rights reserved.
         </p>
       </Container>
     </footer>

@@ -39,10 +39,10 @@ export const mockHeroSlides: HeroSlide[] = [
   },
   {
     id: "hero-2",
-    eyebrow: "Phase Reference",
-    headline: "The rebuild keeps the product experience and discards the repo mess.",
+    eyebrow: "Signature Collection",
+    headline: "Discover bestsellers selected for gifting, occasion wear, and daily use.",
     subheading:
-      "Use the source app only as behavior reference while the new codebase stays frontend-only and mock-driven.",
+      "Browse standout pieces across caps, wraps, and fragrance essentials with a simple WhatsApp-first ordering flow.",
     desktopImage: "/images/barkati-topi.webp",
     mobileImage: "/images/topi1.png",
     ctaLabel: "Explore Structure",
@@ -190,12 +190,12 @@ export const mockFaqs: FAQItem[] = [
   {
     id: "faq-1",
     question: "Is Shopsathi V1 connected to a backend?",
-    answer: "No. This rebuild is intentionally frontend-only and uses local mock data during the initial phases.",
+    answer: "This storefront currently runs with local product content and a WhatsApp-first ordering flow.",
   },
   {
     id: "faq-2",
     question: "Why not copy the old code directly?",
-    answer: "Because the old repo mixes data shaping, UI logic, and business rules too tightly. The rebuild keeps the product but replaces the structure.",
+    answer: "The storefront experience stays the same, but the codebase has been reorganized to keep the frontend cleaner and easier to maintain.",
   },
   {
     id: "faq-3",

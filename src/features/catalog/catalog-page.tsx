@@ -89,8 +89,7 @@ export function CatalogPage() {
                   Browse the full storefront.
                 </h1>
                 <p className="text-lg leading-8 text-[var(--color-muted)]">
-                  The catalog now looks closer to the original Shopsathi storefront while
-                  keeping the new implementation clean and maintainable.
+                  Explore curated products, compare prices, and open any item for full details before ordering.
                 </p>
               </div>
 

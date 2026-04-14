@@ -44,9 +44,6 @@ export function AppHeader({
               <p className="font-display text-2xl leading-none text-[var(--color-accent-strong)]">
                 {settings.businessName}
               </p>
-              <p className="mt-1 text-xs uppercase tracking-[0.22em] text-[var(--color-muted)]">
-                Official Storefront
-              </p>
             </div>
           </Link>
 

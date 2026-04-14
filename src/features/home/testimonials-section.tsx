@@ -13,7 +13,7 @@ export function TestimonialsSection({
         <SectionHeading
           eyebrow="Testimonials"
           title="Confidence matters more than feature count in this storefront."
-          description="The original app already signaled trust through simple social proof. The rebuild keeps that idea, but the section now looks and reads like a storefront rather than a generic product page."
+          description="Real buyer confidence comes from clarity, trust, and a simple ordering experience."
           align="center"
         />
         <div className="grid gap-6 lg:grid-cols-2">

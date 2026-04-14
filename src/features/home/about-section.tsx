@@ -26,8 +26,8 @@ export function AboutSection({ settings }: { settings: SiteSettings }) {
         </div>
         <div className="space-y-8">
           <SectionHeading
-            eyebrow="About The Rebuild"
-            title="The storefront is being rebuilt with cleaner boundaries and the same product intent."
+            eyebrow="About Shopsathi"
+            title="A curated storefront for modest essentials, gifting, and everyday devotion."
             description={settings.description}
           />
           <div className="grid gap-4">

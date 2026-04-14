@@ -8,8 +8,8 @@ export function FAQSection({ faqs }: { faqs: FAQItem[] }) {
       <Container className="space-y-10">
         <SectionHeading
           eyebrow="FAQ"
-          title="The rebuild is explicit about what exists now and what comes later."
-          description="This keeps the prototype honest while still making it usable for product and frontend iteration."
+          title="Everything you need to know before placing an order."
+          description="A few common questions about browsing, ordering, and product availability."
         />
         <div className="grid gap-4">
           {faqs.map((faq) => (

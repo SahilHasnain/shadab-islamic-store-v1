@@ -12,7 +12,7 @@ export function ContactSection({ settings }: { settings: SiteSettings }) {
           <SectionHeading
             eyebrow="Ready To Order"
             title="WhatsApp remains the primary conversion path."
-            description="That behavior was already right in the source app. The rebuild keeps it front and center while making the supporting code easier to extend later."
+            description="Reach out directly on WhatsApp to place an order, ask for availability, or confirm product details."
             tone="inverse"
           />
           <div className="mt-8">
