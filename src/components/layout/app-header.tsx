@@ -25,6 +25,7 @@ export function AppHeader({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { itemCount, openCart } = useCart();
+  const hasWhatsApp = Boolean(settings.contact.whatsappNumber);
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-border)] bg-[rgba(255,255,255,0.82)] backdrop-blur-xl">
@@ -99,12 +100,14 @@ export function AppHeader({
             <Button href="/products" variant="secondary">
               Browse Catalog
             </Button>
-            <Button
-              href={`https://wa.me/${settings.contact.whatsappNumber}`}
-              className="shadow-none"
-            >
-              WhatsApp
-            </Button>
+            {hasWhatsApp ? (
+              <Button
+                href={`https://wa.me/${settings.contact.whatsappNumber}`}
+                className="shadow-none"
+              >
+                WhatsApp
+              </Button>
+            ) : null}
           </div>
 
           <button

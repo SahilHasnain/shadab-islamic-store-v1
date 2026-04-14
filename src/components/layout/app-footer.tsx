@@ -10,6 +10,8 @@ const footerLinks = [
 ];
 
 export function AppFooter({ settings }: { settings: SiteSettings }) {
+  const hasWhatsApp = Boolean(settings.contact.whatsappNumber);
+
   return (
     <footer className="border-t border-[var(--color-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(220,252,231,0.72))] py-16">
       <Container className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
@@ -44,17 +46,19 @@ export function AppFooter({ settings }: { settings: SiteSettings }) {
             Connect
           </p>
           <div className="mt-4 grid gap-3 text-sm">
-            <a
-              href={buildWhatsAppUrl(
-                settings.contact.whatsappNumber,
-                settings.contact.whatsappMessage,
-              )}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[var(--color-ink)] transition-colors hover:text-[var(--color-accent-strong)]"
-            >
-              WhatsApp
-            </a>
+            {hasWhatsApp ? (
+              <a
+                href={buildWhatsAppUrl(
+                  settings.contact.whatsappNumber,
+                  settings.contact.whatsappMessage,
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[var(--color-ink)] transition-colors hover:text-[var(--color-accent-strong)]"
+              >
+                WhatsApp
+              </a>
+            ) : null}
             {settings.contact.instagramHandle ? (
               <a
                 href={`https://instagram.com/${settings.contact.instagramHandle}`}

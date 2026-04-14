@@ -8,16 +8,22 @@ import {
   getSiteSettings,
   getTestimonials,
 } from "@/src/backend/repositories";
-import {
-  mockCategories,
-  mockFaqs,
-  mockFeaturedProducts,
-  mockHeroSlides,
-  mockSettings,
-  mockTestimonials,
-  mockCatalogProducts,
-} from "@/src/data/mock";
-import type { Product, SiteContent } from "@/src/types";
+import type { Product, SiteContent, SiteSettings } from "@/src/types";
+
+const emptySettings: SiteSettings = {
+  businessName: "Storefront",
+  description: "",
+  logoPath: "/placeholder.svg",
+  businessImage: "/placeholder.svg",
+  featuredProductsTitle: "Featured Products",
+  mapEmbedUrl: "",
+  contact: {
+    whatsappNumber: "",
+    whatsappMessage: "",
+    instagramHandle: undefined,
+  },
+  newProductThresholdDays: 15,
+};
 
 function attachCategorySlugs(products: Product[], categories: SiteContent["categories"]) {
   const categorySlugById = new Map(categories.map((category) => [category.id, category.slug]));
@@ -41,43 +47,25 @@ export async function getStorefrontData(): Promise<SiteContent> {
         getFaqs(),
       ]);
 
-    if (!settings) {
-      return {
-        settings: mockSettings,
-        categories: mockCategories,
-        featuredProducts: mockFeaturedProducts,
-        catalogProducts: mockCatalogProducts,
-        heroSlides: mockHeroSlides,
-        testimonials: mockTestimonials,
-        faqs: mockFaqs,
-      };
-    }
-
     return {
-      settings,
-      categories: categories.length ? categories : mockCategories,
-      featuredProducts: attachCategorySlugs(
-        featuredProducts.length ? featuredProducts : mockFeaturedProducts,
-        categories.length ? categories : mockCategories,
-      ),
-      catalogProducts: attachCategorySlugs(
-        catalogProducts.length ? catalogProducts : mockCatalogProducts,
-        categories.length ? categories : mockCategories,
-      ),
-      heroSlides: heroSlides.length ? heroSlides : mockHeroSlides,
-      testimonials: testimonials.length ? testimonials : mockTestimonials,
-      faqs: faqs.length ? faqs : mockFaqs,
+      settings: settings ?? emptySettings,
+      categories,
+      featuredProducts: attachCategorySlugs(featuredProducts, categories),
+      catalogProducts: attachCategorySlugs(catalogProducts, categories),
+      heroSlides,
+      testimonials,
+      faqs,
     };
   } catch (error) {
-    console.error("Falling back to mock storefront data:", error);
+    console.error("Unable to load storefront data from Appwrite:", error);
     return {
-      settings: mockSettings,
-      categories: mockCategories,
-      featuredProducts: mockFeaturedProducts,
-      catalogProducts: mockCatalogProducts,
-      heroSlides: mockHeroSlides,
-      testimonials: mockTestimonials,
-      faqs: mockFaqs,
+      settings: emptySettings,
+      categories: [],
+      featuredProducts: [],
+      catalogProducts: [],
+      heroSlides: [],
+      testimonials: [],
+      faqs: [],
     };
   }
 }

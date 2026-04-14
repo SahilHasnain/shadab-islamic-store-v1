@@ -18,7 +18,7 @@ export function FeaturedProductsSection({
         <SectionHeading
           eyebrow="Featured Products"
           title={title}
-          description="The homepage now carries the same bright storefront energy as the original app, but the implementation remains cleanly separated from data shaping and catalog logic."
+          description="Explore a curated selection of bestselling pieces chosen for gifting, occasion wear, and everyday use."
           action={
             <Button href="/products" variant="secondary">
               Browse full catalog

@@ -82,6 +82,8 @@ export function CatalogPage({
     [categories, filters.inStockOnly, filters.priceRange, filters.search, products],
   );
 
+  const isEmptyCatalog = categories.length === 0 && products.length === 0;
+
   return (
     <>
       <main className="py-14 md:py-18">
@@ -131,42 +133,54 @@ export function CatalogPage({
             </div>
           </section>
 
-          <section className="grid gap-6 lg:grid-cols-[18rem_1fr]">
-            <CatalogSidebar
-              categories={categories}
-              counts={categoryCounts}
-              selectedCategory={filters.category}
-              onCategoryChange={(value) => updateFilters({ category: value })}
-              selectedPriceRange={filters.priceRange}
-              onPriceRangeChange={(value) => updateFilters({ priceRange: value })}
-              inStockOnly={filters.inStockOnly}
-              onInStockOnlyChange={(value) => updateFilters({ inStockOnly: value })}
-            />
+          {isEmptyCatalog ? (
+            <section className="rounded-[2rem] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
+              <p className="font-display text-3xl text-[var(--color-ink)]">
+                No live products have been published yet.
+              </p>
+              <p className="mx-auto mt-3 max-w-2xl text-base leading-8 text-[var(--color-muted)]">
+                This catalog now reads only from Appwrite. Add categories and products from the
+                admin panel to make them visible here.
+              </p>
+            </section>
+          ) : (
+            <section className="grid gap-6 lg:grid-cols-[18rem_1fr]">
+              <CatalogSidebar
+                categories={categories}
+                counts={categoryCounts}
+                selectedCategory={filters.category}
+                onCategoryChange={(value) => updateFilters({ category: value })}
+                selectedPriceRange={filters.priceRange}
+                onPriceRangeChange={(value) => updateFilters({ priceRange: value })}
+                inStockOnly={filters.inStockOnly}
+                onInStockOnlyChange={(value) => updateFilters({ inStockOnly: value })}
+              />
 
-            <div className="space-y-6">
-              {filteredProducts.length ? (
-                <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                  {filteredProducts.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      category={categories.find((category) => category.id === product.categorySlug)}
-                      onClick={() => setSelectedProduct(product)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-[2rem] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
-                  <p className="font-display text-3xl text-[var(--color-ink)]">
-                    No products match these filters.
-                  </p>
-                  <p className="mt-3 text-base leading-8 text-[var(--color-muted)]">
-                    Try clearing the search term or widening the price range.
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
+              <div className="space-y-6">
+                {filteredProducts.length ? (
+                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    {filteredProducts.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        category={categories.find((category) => category.id === product.categorySlug)}
+                        onClick={() => setSelectedProduct(product)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-[2rem] border border-[var(--color-border)] bg-white p-10 text-center shadow-[var(--shadow-card)]">
+                    <p className="font-display text-3xl text-[var(--color-ink)]">
+                      No products match these filters.
+                    </p>
+                    <p className="mt-3 text-base leading-8 text-[var(--color-muted)]">
+                      Try clearing the search term or widening the price range.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
         </Container>
       </main>
 

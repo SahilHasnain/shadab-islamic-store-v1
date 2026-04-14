@@ -8,13 +8,14 @@ import { CartDrawer } from "@/src/features/cart/cart-drawer";
 
 export async function AppShell({ children }: { children: ReactNode }) {
   const storefront = await getStorefrontData();
+  const hasWhatsApp = Boolean(storefront.settings.contact.whatsappNumber);
 
   return (
     <CartProvider>
       <AppHeader settings={storefront.settings} categories={storefront.categories} />
       <div className="min-h-[calc(100vh-6rem)]">{children}</div>
       <AppFooter settings={storefront.settings} />
-      <FloatingWhatsApp contact={storefront.settings.contact} />
+      {hasWhatsApp ? <FloatingWhatsApp contact={storefront.settings.contact} /> : null}
       <CartDrawer contact={storefront.settings.contact} />
     </CartProvider>
   );

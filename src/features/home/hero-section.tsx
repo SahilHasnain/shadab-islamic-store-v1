@@ -12,6 +12,26 @@ export function HeroSection({
 }) {
   const [primarySlide, secondarySlide] = slides;
 
+  if (!primarySlide) {
+    return (
+      <section className="relative overflow-hidden pb-16 pt-12 md:pb-24 md:pt-16">
+        <Container>
+          <div className="rounded-[2.5rem] border border-[var(--color-border)] bg-white px-8 py-14 text-center shadow-[var(--shadow-panel)] md:px-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+              Hero Setup
+            </p>
+            <h1 className="mt-4 font-display text-5xl leading-none tracking-[-0.05em] text-[var(--color-accent-strong)] md:text-6xl">
+              No hero slides published yet.
+            </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
+              Add hero slides from the admin panel to populate the storefront banner.
+            </p>
+          </div>
+        </Container>
+      </section>
+    );
+  }
+
   return (
     <section className="relative overflow-hidden pb-16 pt-12 md:pb-24 md:pt-16">
       <Container className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
@@ -60,35 +80,41 @@ export function HeroSection({
           </div>
         </div>
 
-        <div className="grid gap-6">
-          <div className="grid min-h-[24rem] overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,#16a34a,#166534)] text-[var(--color-surface)] shadow-[var(--shadow-panel)]">
-            <div className="grid h-full gap-4 p-6 sm:grid-cols-[0.9fr_1.1fr] sm:items-end">
-              <div className="space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/70">
-                  {secondarySlide.eyebrow}
-                </p>
-                <h2 className="font-display text-3xl leading-tight">
-                  {secondarySlide.headline}
-                </h2>
-                <p className="text-sm leading-7 text-[var(--color-cream)]/80">
-                  {secondarySlide.subheading}
-                </p>
-                <Button href={secondarySlide.ctaHref} variant="secondary" className="border-white/20 bg-white/10 text-white hover:border-white hover:text-white">
-                  {secondarySlide.ctaLabel}
-                </Button>
-              </div>
-              <div className="relative min-h-[16rem]">
-                <Image
-                  src={secondarySlide.desktopImage}
-                  alt={secondarySlide.headline}
-                  fill
-                  className="rounded-[1.8rem] object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
+        {secondarySlide ? (
+          <div className="grid gap-6">
+            <div className="grid min-h-[24rem] overflow-hidden rounded-[2.5rem] border border-[var(--color-border)] bg-[linear-gradient(180deg,#16a34a,#166534)] text-[var(--color-surface)] shadow-[var(--shadow-panel)]">
+              <div className="grid h-full gap-4 p-6 sm:grid-cols-[0.9fr_1.1fr] sm:items-end">
+                <div className="space-y-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-cream)]/70">
+                    {secondarySlide.eyebrow}
+                  </p>
+                  <h2 className="font-display text-3xl leading-tight">
+                    {secondarySlide.headline}
+                  </h2>
+                  <p className="text-sm leading-7 text-[var(--color-cream)]/80">
+                    {secondarySlide.subheading}
+                  </p>
+                  <Button
+                    href={secondarySlide.ctaHref}
+                    variant="secondary"
+                    className="border-white/20 bg-white/10 text-white hover:border-white hover:text-white"
+                  >
+                    {secondarySlide.ctaLabel}
+                  </Button>
+                </div>
+                <div className="relative min-h-[16rem]">
+                  <Image
+                    src={secondarySlide.desktopImage}
+                    alt={secondarySlide.headline}
+                    fill
+                    className="rounded-[1.8rem] object-cover"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </Container>
     </section>
   );
