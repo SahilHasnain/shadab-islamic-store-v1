@@ -92,15 +92,20 @@ export function CatalogPage({
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
               Catalog
             </p>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-3xl space-y-3">
-                <h1 className="font-display text-5xl leading-none tracking-[-0.04em] text-[var(--color-accent-strong)] md:text-6xl">
-                  Browse the full storefront.
-                </h1>
-                <p className="text-lg leading-8 text-[var(--color-muted)]">
-                  Explore curated products, compare prices, and open any item for full
-                  details before ordering.
-                </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-3 text-sm text-[var(--color-muted)]">
+                <span>
+                  Category:{" "}
+                  <strong className="text-[var(--color-ink)]">
+                    {filters.category === "all"
+                      ? "All products"
+                      : getCategoryTitle(filters.category, categories)}
+                  </strong>
+                </span>
+                <span>
+                  Results:{" "}
+                  <strong className="text-[var(--color-ink)]">{filteredProducts.length}</strong>
+                </span>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
@@ -116,20 +121,6 @@ export function CatalogPage({
                   onChange={(value) => updateFilters({ sortBy: value })}
                 />
               </div>
-            </div>
-            <div className="flex flex-wrap gap-3 text-sm text-[var(--color-muted)]">
-              <span>
-                Category:{" "}
-                <strong className="text-[var(--color-ink)]">
-                  {filters.category === "all"
-                    ? "All products"
-                    : getCategoryTitle(filters.category, categories)}
-                </strong>
-              </span>
-              <span>
-                Results:{" "}
-                <strong className="text-[var(--color-ink)]">{filteredProducts.length}</strong>
-              </span>
             </div>
           </section>
 

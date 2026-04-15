@@ -9,33 +9,39 @@ export function SectionHeading({
   action,
   tone = "default",
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
   action?: ReactNode;
   tone?: "default" | "inverse";
 }) {
+  const isCompact = !eyebrow && !description;
+
   return (
     <div
       className={cn(
         "flex gap-6",
         align === "center"
           ? "flex-col items-center text-center"
-          : "flex-col justify-between lg:flex-row lg:items-end",
+          : isCompact
+            ? "flex-row items-center justify-between"
+            : "flex-col justify-between lg:flex-row lg:items-end",
       )}
     >
       <div className={cn("space-y-4", align === "center" ? "max-w-3xl" : "max-w-2xl")}>
-        <p
-          className={cn(
-            "text-xs font-semibold uppercase tracking-[0.24em]",
-            tone === "inverse"
-              ? "text-[var(--color-cream)]/70"
-              : "text-[var(--color-accent)]",
-          )}
-        >
-          {eyebrow}
-        </p>
+        {eyebrow && (
+          <p
+            className={cn(
+              "text-xs font-semibold uppercase tracking-[0.24em]",
+              tone === "inverse"
+                ? "text-[var(--color-cream)]/70"
+                : "text-[var(--color-accent)]",
+            )}
+          >
+            {eyebrow}
+          </p>
+        )}
         <h2
           className={cn(
             "font-display text-4xl leading-none tracking-[-0.03em] md:text-5xl",
@@ -57,7 +63,7 @@ export function SectionHeading({
           </p>
         ) : null}
       </div>
-      {action ? <div>{action}</div> : null}
+      {action ? <div className="flex-shrink-0">{action}</div> : null}
     </div>
   );
 }
