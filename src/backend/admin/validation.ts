@@ -173,3 +173,123 @@ export function parseSiteSettingsInput(payload: unknown): SiteSettingsInput {
     newProductThresholdDays,
   };
 }
+
+export interface HeroSlideInput {
+  eyebrow?: string;
+  headline: string;
+  subheading?: string;
+  desktopImageId: string;
+  mobileImageId?: string;
+  ctaLabel: string;
+  ctaHref: string;
+  displayOrder: number;
+  isActive: boolean;
+}
+
+export function parseHeroSlideInput(payload: unknown): HeroSlideInput {
+  const data = (payload ?? {}) as Record<string, unknown>;
+
+  if (!isNonEmptyString(data.headline)) {
+    throw new Error("Hero headline is required");
+  }
+  if (!isNonEmptyString(data.desktopImageId)) {
+    throw new Error("Hero desktop image is required");
+  }
+  if (!isNonEmptyString(data.ctaLabel)) {
+    throw new Error("Hero CTA label is required");
+  }
+  if (!isNonEmptyString(data.ctaHref)) {
+    throw new Error("Hero CTA link is required");
+  }
+
+  const displayOrder = Number(data.displayOrder);
+
+  if (!Number.isFinite(displayOrder) || displayOrder < 1) {
+    throw new Error("Hero display order must be a positive number");
+  }
+
+  return {
+    eyebrow: isNonEmptyString(data.eyebrow) ? data.eyebrow.trim() : undefined,
+    headline: String(data.headline).trim(),
+    subheading: isNonEmptyString(data.subheading) ? data.subheading.trim() : undefined,
+    desktopImageId: String(data.desktopImageId).trim(),
+    mobileImageId: isNonEmptyString(data.mobileImageId) ? data.mobileImageId.trim() : undefined,
+    ctaLabel: String(data.ctaLabel).trim(),
+    ctaHref: String(data.ctaHref).trim(),
+    displayOrder,
+    isActive: data.isActive !== false,
+  };
+}
+
+export interface TestimonialInput {
+  name: string;
+  role?: string;
+  text: string;
+  rating?: number;
+  displayOrder: number;
+  isActive: boolean;
+}
+
+export function parseTestimonialInput(payload: unknown): TestimonialInput {
+  const data = (payload ?? {}) as Record<string, unknown>;
+
+  if (!isNonEmptyString(data.name)) {
+    throw new Error("Customer name is required");
+  }
+  if (!isNonEmptyString(data.text)) {
+    throw new Error("Testimonial text is required");
+  }
+
+  const displayOrder = Number(data.displayOrder);
+  const rating =
+    data.rating === null || data.rating === undefined || data.rating === ""
+      ? undefined
+      : Number(data.rating);
+
+  if (!Number.isFinite(displayOrder) || displayOrder < 1) {
+    throw new Error("Testimonial display order must be a positive number");
+  }
+  if (rating !== undefined && (!Number.isFinite(rating) || rating < 1 || rating > 5)) {
+    throw new Error("Rating must be between 1 and 5");
+  }
+
+  return {
+    name: String(data.name).trim(),
+    role: isNonEmptyString(data.role) ? data.role.trim() : undefined,
+    text: String(data.text).trim(),
+    rating,
+    displayOrder,
+    isActive: data.isActive !== false,
+  };
+}
+
+export interface FaqInput {
+  question: string;
+  answer: string;
+  displayOrder: number;
+  isActive: boolean;
+}
+
+export function parseFaqInput(payload: unknown): FaqInput {
+  const data = (payload ?? {}) as Record<string, unknown>;
+
+  if (!isNonEmptyString(data.question)) {
+    throw new Error("FAQ question is required");
+  }
+  if (!isNonEmptyString(data.answer)) {
+    throw new Error("FAQ answer is required");
+  }
+
+  const displayOrder = Number(data.displayOrder);
+
+  if (!Number.isFinite(displayOrder) || displayOrder < 1) {
+    throw new Error("FAQ display order must be a positive number");
+  }
+
+  return {
+    question: String(data.question).trim(),
+    answer: String(data.answer).trim(),
+    displayOrder,
+    isActive: data.isActive !== false,
+  };
+}
