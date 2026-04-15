@@ -372,7 +372,7 @@ export default function AdminContentPage() {
               value={heroForm.eyebrow}
               onChange={(event) => setHeroForm((current) => ({ ...current, eyebrow: event.target.value }))}
               className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm"
-              placeholder="Eyebrow"
+              placeholder="Small text above headline (optional)"
             />
             <input
               required

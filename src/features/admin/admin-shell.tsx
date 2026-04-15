@@ -23,7 +23,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="grid min-h-screen lg:grid-cols-[16rem_1fr]">
         <aside className="border-r border-slate-200 bg-white px-5 py-6">
           <div>
-            <p className="font-display text-3xl text-slate-900">Shopsathi</p>
+            <p className="font-display text-3xl text-slate-900">Shadab Islamic Store</p>
             <p className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-500">
               Admin Panel
             </p>
