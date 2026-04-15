@@ -16,9 +16,7 @@ export function FeaturedProductsSection({
     <section id="featured-products" className="py-16 md:py-24">
       <Container className="space-y-10">
         <SectionHeading
-          eyebrow="Featured Products"
           title={title}
-          description="Explore a curated selection of bestselling pieces chosen for gifting, occasion wear, and everyday use."
           action={
             <Button href="/products" variant="secondary">
               Browse full catalog

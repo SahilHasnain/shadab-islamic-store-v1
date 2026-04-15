@@ -42,7 +42,7 @@ export function HomePage({
 
   return (
     <>
-      <HeroSection slides={heroSlides} categories={categories} />
+      <HeroSection slides={heroSlides} />
       <FeaturedProductsSection
         title={settings.featuredProductsTitle}
         products={featuredProducts}
